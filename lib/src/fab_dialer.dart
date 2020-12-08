@@ -1,25 +1,30 @@
 part of flutter_fab_dialer;
 
 class FabDialer extends StatefulWidget {
-  const FabDialer(this._fabMiniMenuItemList, this._fabColor, this._fabIcon);
+  // AnimationStyle is an optional parameter to avoid breaking changes
+  const FabDialer(this._fabMiniMenuItemList, this._fabColor, this._fabIcon,
+      [this._fabAnimationStyle = AnimationStyle.defaultAnimation]);
 
   final List<FabMiniMenuItem> _fabMiniMenuItemList;
   final Color _fabColor;
   final Icon _fabIcon;
+  final AnimationStyle _fabAnimationStyle;
 
   @override
-  FabDialerState createState() =>
-      new FabDialerState(_fabMiniMenuItemList, _fabColor, _fabIcon);
+  FabDialerState createState() => new FabDialerState(
+      _fabMiniMenuItemList, _fabColor, _fabIcon, _fabAnimationStyle);
 }
 
 class FabDialerState extends State<FabDialer> with TickerProviderStateMixin {
-  FabDialerState(this._fabMiniMenuItemList, this._fabColor, this._fabIcon);
+  FabDialerState(this._fabMiniMenuItemList, this._fabColor, this._fabIcon,
+      this._fabAnimationStyle);
 
   int _angle = 90;
   bool _isRotated = true;
   final List<FabMiniMenuItem> _fabMiniMenuItemList;
   final Color _fabColor;
   final Icon _fabIcon;
+  final AnimationStyle _fabAnimationStyle;
   List<FabMenuMiniItemWidget> _fabMenuItems;
 
   AnimationController _controller;
@@ -45,12 +50,18 @@ class FabDialerState extends State<FabDialer> with TickerProviderStateMixin {
         text: _fabMiniMenuItemList[i].text,
         elevation: _fabMiniMenuItemList[i].elevation,
         icon: _fabMiniMenuItemList[i].icon,
+        image: _fabMiniMenuItemList[i].image,
         index: i,
         onPressed: _fabMiniMenuItemList[i].onPressed,
         textColor: _fabMiniMenuItemList[i].textColor,
         fabColor: _fabMiniMenuItemList[i].fabColor,
         chipColor: _fabMiniMenuItemList[i].chipColor,
         controller: _controller,
+        animationStyle: _fabAnimationStyle,
+        itemCount: _fabMiniMenuItemList.length,
+        // Send item count to each item to help animation calc
+        hideWidget:
+            _fabMiniMenuItemList[i].hideOnClick == false ? null : _rotate,
       ));
     }
 
@@ -74,7 +85,7 @@ class FabDialerState extends State<FabDialer> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        margin: new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        margin: new EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
